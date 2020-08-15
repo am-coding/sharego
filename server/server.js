@@ -2,11 +2,14 @@ const express = require('express')
 const next = require('next')
 const { v4: uuidv4 } = require('uuid');
 
+const uploadRoute = require('./routes/upload');
+
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 const { BlobServiceClient } = require("@azure/storage-blob");
+
 
 async function main() {
   console.log('Azure Blob storage v12 - JavaScript quickstart sample');
@@ -55,13 +58,7 @@ main();
 app.prepare().then(() => {
   const server = express()
 
-  server.get('/a', (req, res) => {
-    return app.render(req, res, '/a', req.query)
-  })
-
-  server.get('/b', (req, res) => {
-    return app.render(req, res, '/b', req.query)
-  })
+  server.use("/", uploadRoute)
 
   server.all('*', (req, res) => {
     return handle(req, res)
