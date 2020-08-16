@@ -3,6 +3,7 @@ const next = require('next')
 const { v4: uuidv4 } = require('uuid');
 
 const uploadRoute = require('./routes/upload');
+const indexRoute = require('./routes/index');
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
@@ -52,14 +53,14 @@ async function main() {
 
 }
 
-main();
 
 
 app.prepare().then(() => {
   const server = express()
 
   server.use("/", uploadRoute)
-
+  server.use("/", indexRoute)
+  
   server.all('*', (req, res) => {
     return handle(req, res)
   })
